@@ -1,21 +1,27 @@
-from transformers import pipeline
+from transformers import pipeline, BartTokenizer
 import gradio as gr
 
-# Initialize summarization model
-model = pipeline("summarization", model="facebook/bart-large-cnn")  # Explicitly specify the model
+# Initialize model and tokenizer
+model = pipeline("summarization", model="facebook/bart-large-cnn")
+tokenizer = BartTokenizer.from_pretrained("facebook/bart-large-cnn")
 
 def predict(prompt):
     try:
-        # Ensure input length is within model's token limit
-        max_input_length = 512  # Token limit for most summarization models
-        prompt = prompt[:max_input_length]
-
+        # Tokenize and truncate input to 512 tokens
+        inputs = tokenizer(prompt, max_length=512, truncation=True, return_tensors="pt")
+        
         # Generate summary
         summary = model(prompt, max_length=150, min_length=50, do_sample=False)[0]["summary_text"]
         return summary
     except Exception as e:
         return f"Error: {str(e)}"
 
-# Create an interface for the model
-with gr.Interface(fn=predict, inputs="textbox", outputs="text", title="Text Summarization") as interface:
+# Create Gradio interface
+with gr.Interface(
+    fn=predict, 
+    inputs="textbox", 
+    outputs="text", 
+    title="Text Summarization",
+    description="Summarize your input text using Hugging Face's Transformers library.",
+) as interface:
     interface.launch()
