@@ -1,5 +1,5 @@
-gradio==5.10.0
-transformers==4.28.0  # Ensure compatibility with your transformers pipeline
-numpy==1.21.0  # Compatible with TensorFlow
-tensorflow-cpu==2.11.0  # Use CPU-only version of TensorFlow
+gradio==3.39.0
+transformers==4.28.0
+numpy==1.23.5
+tensorflow-cpu==2.11.0
 keras==2.11.0
